@@ -22,7 +22,7 @@ google_analytics_viz <- function(title = NULL, viz = NULL, btn_id, df = NULL,
           ),
           div(
             class = "panel-body",
-            plotly::plot_ly(mtcars, x = ~mpg, y = ~wt)
+            plotly::plot_ly(mtcars, x = ~mpg, y = ~wt, type = "scatter", mode = "markers")
           )
         )
       )
