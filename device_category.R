@@ -1,17 +1,23 @@
-device_category <- function(df){
+library(dplyr)
+library(plotly)
 
-    df_plot <- df  %>% 
-        dplyr::group_by(device_category) %>% 
-        dplyr::summarise(
-            n = dplyr::n()
-        ) %>% 
-        dplyr::ungroup() %>% 
-        dplyr::mutate(prop = round(n/sum(n)*100, 2))
+device_category <- function(df){ # nolint
 
-    final_plot <- plot_ly(df_plot, labels = ~ device_category, values = ~prop, type = "pie")
+  df_plot <- df %>%
+    dplyr::group_by(device_category) %>%  # nolint
+    dplyr::summarise(
+      n = dplyr::n()
+    ) %>%  # nolint
+    dplyr::ungroup() %>%
+    dplyr::mutate(prop = round(n / sum(n) * 100, 2))
 
-    # htmlwidgets::saveWidget(final_plot, "plot.html")
+  final_plot <- plot_ly(
+    df_plot,
+    labels = ~ device_category,
+    values = ~ prop,
+    type = "pie"
+  )
 
-    return(final_plot)
+  return(final_plot)
 
 }

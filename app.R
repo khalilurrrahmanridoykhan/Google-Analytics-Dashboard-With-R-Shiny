@@ -3,23 +3,23 @@ library(tidyverse)
 library(plotly)
 library(purrr)
 library(readr)
-cat("\014") 
-source("google_analytics_viz.R") 
-source("device_category.R") 
+cat("\014")
+source("google_analytics_viz.R")
+source("device_category.R")
 list.files(here::here("R")) %>%
   here::here("R", .) %>%
   purrr::walk(~ source(.))
 options(max.print = 1000)
-df <- read_csv(here::here("./data/web_data.csv")) 
- 
-device_category(df)              
+df <- read_csv(here::here("./data/web_data.csv"))
+
+device_category(df)
 
 
 ui <- fluidPage(
   br(),
   br(),
   div(id = "placeholder"),
-  shiny::tagList(      
+  shiny::tagList(
     shiny::uiOutput(outputId = "first_plots")
   ),
   shiny::includeScript(here::here("./scripts.js"))
@@ -38,7 +38,7 @@ server <- function(input, output) {
         y = c("Viz 1", "Viz 2", "Viz 3")
       ),
       function(x, y) {
-        google_analytics_viz(
+        google_analytics_viz( # nolint
           title = y,
           viz = NULL,
           df = NULL,
