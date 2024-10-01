@@ -1,3 +1,11 @@
+switch_fn <- function(viz, df){
+  switch(
+    viz,
+    `Page Views` = page_views(df),
+    `Device Category` = device_category(df)
+  )
+}
+
 google_analytics_viz <- function(title = NULL, viz = NULL, btn_id, df = NULL,
                                  class_all, class_specific, color) {
   shiny::tagList(
@@ -22,7 +30,8 @@ google_analytics_viz <- function(title = NULL, viz = NULL, btn_id, df = NULL,
           ),
           div(
             class = "panel-body",
-            plotly::plot_ly(mtcars, x = ~mpg, y = ~wt, type = "scatter", mode = "markers")
+            # plotly::plot_ly(mtcars, x = ~mpg, y = ~wt, type = "scatter", mode = "markers")
+            switch_fn(viz, df)
           )
         )
       )

@@ -6,15 +6,15 @@ library(readr)
 cat("\014")
 source("google_analytics_viz.R")
 source("device_category.R")
+source("page_views.R")
 list.files(here::here("R")) %>%
   here::here("R", .) %>%
   purrr::walk(~ source(.))
 options(max.print = 1000)
-df <- read_csv(here::here("./data/web_data.csv"))
+web_data <- read_csv(here::here("./data/web_data.csv"))
 
-device_category(df)
-
-
+device_category(web_data)
+page_views(web_data)
 ui <- fluidPage(
   br(),
   br(),
@@ -34,14 +34,14 @@ server <- function(input, output) {
   output$first_plots <- shiny::renderUI({
     purrr::pmap(
       list(
-        x = c("a", "b", "c"),
-        y = c("Viz 1", "Viz 2", "Viz 3")
+        x = c("a", "b"),
+        y = c("Page Views", "Device Category")
       ),
       function(x, y) {
         google_analytics_viz( # nolint
           title = y,
-          viz = NULL,
-          df = NULL,
+          viz = y,
+          df = web_data,
           btn_id = x,
           class_all = "delete",
           class_specific = paste0("class_", x),
@@ -60,8 +60,8 @@ server <- function(input, output) {
       if (exists("google_analytics_viz")) {
         google_analytics_viz(
           title = input$header,
-          viz = NULL,
-          df = NULL,
+          viz = input$header,
+          df = web_data,
           btn_id = panel,
           class_all = "delete",
           class_specific = paste0("class_", panel),
@@ -83,6 +83,7 @@ server <- function(input, output) {
     )
   })
 }
+shiny::shinyOptions(warnOnDuplicateIDs = FALSE)
 
 # Run the application
 shinyApp(ui = ui, server = server)
