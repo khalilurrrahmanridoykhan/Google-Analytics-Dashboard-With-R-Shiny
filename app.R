@@ -4,12 +4,12 @@ library(plotly)
 library(purrr)
 library(readr)
 cat("\014")
-source("google_analytics_viz.R")
-source("device_category.R")
-source("page_views.R")
-list.files(here::here("R")) %>%
-  here::here("R", .) %>%
-  purrr::walk(~ source(.))
+list.files("GoogleAnaliyticsDashboardWithShiny/R")  %>%
+  here::here("GoogleAnaliyticsDashboardWithShiny/R") %>%
+  purrr::walk(
+    ~source(.)
+  )
+
 options(max.print = 1000)
 web_data <- read_csv(here::here("./data/web_data.csv"))
 

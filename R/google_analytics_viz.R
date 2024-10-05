@@ -9,7 +9,7 @@ switch_fn <- function(viz, df){
 google_analytics_viz <- function(title = NULL, viz = NULL, btn_id, df = NULL,
                                  class_all, class_specific, color) {
   shiny::tagList(
-    div(
+    div( # nolint
       class = class_specific,
       div(
         class = "col-md-6",
