@@ -2,7 +2,8 @@ switch_fn <- function(viz, df){
   switch(
     viz,
     `Page Views` = page_views(df),
-    `Device Category` = device_category(df)
+    `Device Category` = device_category(df),
+    `Channel Groupings` = channel_groupings(df)
   )
 }
 

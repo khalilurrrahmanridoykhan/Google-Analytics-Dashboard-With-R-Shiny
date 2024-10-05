@@ -4,6 +4,7 @@ library(plotly)
 library(purrr)
 library(readr)
 cat("\014")
+
 list.files("GoogleAnaliyticsDashboardWithShiny/R")  %>%
   here::here("GoogleAnaliyticsDashboardWithShiny/R") %>%
   purrr::walk(
@@ -15,13 +16,12 @@ web_data <- read_csv(here::here("./data/web_data.csv"))
 
 device_category(web_data)
 page_views(web_data)
+channel_groupings(web_data)
 ui <- fluidPage(
   br(),
   br(),
   div(id = "placeholder"),
-  shiny::tagList(
-    shiny::uiOutput(outputId = "first_plots")
-  ),
+  main_viz_ui(id = "main_viz"),
   shiny::includeScript(here::here("./scripts.js"))
 )
 
@@ -31,57 +31,13 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-  output$first_plots <- shiny::renderUI({
-    purrr::pmap(
-      list(
-        x = c("a", "b"),
-        y = c("Page Views", "Device Category")
-      ),
-      function(x, y) {
-        google_analytics_viz( # nolint
-          title = y,
-          viz = y,
-          df = web_data,
-          btn_id = x,
-          class_all = "delete",
-          class_specific = paste0("class_", x),
-          color = "danger"
-        )
-      }
-    )
-  })
-
-  # run when we add visualization
-  shiny::observeEvent(input$add_btn_clicked, {
-    # clicked id
-    panel <- input$add_btn_clicked
-
-    panel_plot_item <-
-      if (exists("google_analytics_viz")) {
-        google_analytics_viz(
-          title = input$header,
-          viz = input$header,
-          df = web_data,
-          btn_id = panel,
-          class_all = "delete",
-          class_specific = paste0("class_", panel),
-          color = "danger"
-        )
-      } else {
-        print("Function google_analytics_viz is not defined.")
-      }
-
-    css_selector <- ifelse(input$last_panel == "#placeholder",
-      "#placeholder",
-      paste0(".", input$last_panel)
-    )
-
-    shiny::insertUI(
-      selector = css_selector,
-      "afterEnd",
-      ui = panel_plot_item
-    )
-  })
+  main_viz_server(
+    id = "main_viz",
+    df = web_data,
+    add_btn_clicked = shiny::reactive(input$add_btn_clicked),
+    header = shiny::reactive(input$header),
+    last_panel = shiny::reactive(input$last_panel)
+  )
 }
 shiny::shinyOptions(warnOnDuplicateIDs = FALSE)
 
